@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="base.js"></script>
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		var MyTest={
+			show:function(msg,level){
+				console[level](msg);
+				var e=document.createElement('div');
+				e.innerHTML=msg;
+				this.msg.appendChild(e);
+			},
+			t:function(msg,expected,fun){
+				var real,msgEl;
+				if(this.init && typeof this.init ==='function'){
+					this.init();	
+					delete this.init;
+				}
+				if(!this.msg){
+					this.msg=document.createElement('div');
+					document.body.appendChild(this.msg);
+				}
+				try{
+					real=fun();
+				}catch(e){
+					msg=msg+',throw a error:'+e;
+					this.show(msg,'error');
+					return false;
+				}
+				if(real===expected)	{
+					msg+=',ok!';
+				}else{
+					msg+=',fail! expected is '+expected+',but real is '+real;	
+				}
+				this.show(msg,'warn');
+			}
+		}
+		MyTest.init=function(){
+			var frag=document.createDocumentFragment();
+			for(var i=1;i<4;i++){
+				var e=document.createElement('div');
+				e.id='d'+i;
+				e.innerHTML='d'+i;
+				frag.appendChild(e);
+		}
+				var ee=document.createElement('div');
+				ee.id='ee';
+				e.appendChild(ee);
+			document.body.appendChild(frag);
+			}
+		MyTest.t('ADS.$多元素选择',2,function(){
+			var d1=ADS.$('d1','d2');
+			return d1.length;
+		})
+		MyTest.t('ADS.$单元素选择','d1',function(){
+			var d1=ADS.$('d1');
+			return d1.innerHTML;
+		})
+		MyTest.t('ADS.insertAfter,后面有兄弟','s1',function(){
+			var d1=ADS.$('d1');
+			var s=document.createElement('span')
+			s.id='s1';
+			ADS.insertAfter(s,d1);
+			var ss=ADS.$('s1');
+			var id=ss.id;
+			return ss.id;
+		})
+		MyTest.t('ADS.insertAfter,后面没兄弟','s2',function(){
+			var ee=ADS.$('ee');
+			var s=document.createElement('span')
+			s.id='s2';
+			ADS.insertAfter(s,ee);
+			var ss=ADS.$('s2');
+			return ss.id;
+		})
+	</script>	
+</body>
+</html>
