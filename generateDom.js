@@ -5,13 +5,14 @@
 		.replace(/';/g,'\\\'')
 		.replace(/\s+^/mg,'\\n');
 	}
-	function checkForVariable(){
+	function checkForVariable(v){
 		if(v.indexOf('$')==-1){
 			v='\''+v+'\'';
 		}else{
 			v=v.substring(v.indexOf('$')+1);
 			requiredVariables+='var '+v+';\n';
 		}
+		return v;
 	}
 
 	var domCode='';
@@ -26,7 +27,7 @@
 
 		//重置变量
 		domCode='';
-		nodeNameCounters='';
+		nodeNameCounters=[];
 		newVariables='';
 
 		//使用processNode处理domRoot中的所有子节点
@@ -46,7 +47,7 @@
 	}
 
 	function processNode(tabCount,refParent){
-		var tabs=(tabCount?'\t'.repeat(parentInt(tabCout)):'');
+		var tabs=(tabCount?'\t'.repeat(parseInt(tabCount)):'');
 		switch(this.nodeType){
 			case ADS.node.ELEMENT_NODE:
 				if(nodeNameCounters[this.nodeName]){
@@ -58,9 +59,9 @@
 				domCode+=tabs+'var '+ref+' =document.createElement(\'' +this.nodeName+'\');\n';
 				newVariables+=''+ref+';\n';
 
-				if(this.attrbutes){
-					for(var i=0;i<this.attrbutes.length;i++){
-						ADS.walkTheDOMRecursive(processAttribute,this.attrbutes[i],tabCount,ref);
+				if(this.attributes){
+					for(var i=0;i<this.attributes.length;i++){
+						ADS.walkTheDOMRecursive(processAttribute,this.attributes[i],tabCount,ref);
 					}
 				}
 				break;
