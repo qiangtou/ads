@@ -9,7 +9,7 @@
 			return false;
 		}
 		return true;
-	}
+	};
 	window['ADS']['isComparible']=isComparible;
 	function $(){
 		var elements=[];
@@ -24,7 +24,7 @@
 			elements.push(element);
 		}
 		return elements;
-	}
+	};
 	window['ADS']['$']=$;
 	function addEvent(node,type,listener){
 		if(!isComparible()){return false;}
@@ -41,7 +41,7 @@
 			return true;
 		}
 		return false;
-	}
+	};
 	window['ADS']['addEvent']=addEvent;
 	function removeEvent(node,type,listener){
 		if(!(node=$(node))){return false;}
@@ -54,7 +54,7 @@
 			return true;
 		}
 		return false;
-	}
+	};
 	window['ADS']['removeEvent']=removeEvent;
 	function getElementsByClassName(className,tag,parent){
 		parent=parent||document;
@@ -76,7 +76,7 @@
 		}
 		//返回任何匹配的元素
 		return matchingElements;
-	}
+	};
 	window['ADS']['getElementsByClassName']=getElementsByClassName;
 	function toggleDisplay(node,value){
 		if(!(node=$(node))){return false;}
@@ -86,13 +86,13 @@
 			node.style.display=value||'';
 		}
 		return true;
-	}
+	};
 	window['ADS']['toggleDisplay']=toggleDisplay;
 	function insertAfter(node,referenceNode){
 		if(!(node=$(node))){return false;}
 		if(!(referenceNode=$(referenceNode))){return false;}
 		return referenceNode.parentNode.insertBefore(node,referenceNode.nextSibling);
-	}
+	};
 	window['ADS']['insertAfter']=insertAfter;
 	function removeChildren(parent){
 		if(!(parent=$(parent))){return false;}
@@ -102,7 +102,7 @@
 		}
 		//再返回父元素，以便实现方法链式调用
 		return parent;
-	}
+	};
 	window['ADS']['removeChildren']=removeChildren;
 	function prependChild(parent,newChild){
 		if(!(parent=$(parent))){return false;}
@@ -116,13 +116,13 @@
 		}
 		//再返回父元素，以便实现方法链式调用
 		return parent;
-	}
+	};
 	window['ADS']['prependChild']=prependChild;
 	function bindFunction(obj,func){
 		return function(){
 			func.apply(obj,arguments);
 		}
-	}
+	};
 	window['ADS']['bindFunction']=bindFunction;
 	function getBrowserWindowSize(){
 		var de= document.documentElement;
@@ -130,13 +130,13 @@
 			width:(window.innerWidth||(de && de.clientWidth)||document.body.clientWidth),
 			height:(window.innerHeight||(de && de.clientHeight)||document.body.clientHeight)
 		};
-	}
+	};
 	window['ADS']['getBrowserWindowSize']=getBrowserWindowSize;
 	function camelize(s){
 		return s.replace(/-(\w)/g,function(strMatch,p1){
 			return p1.toUpperCase();
 		});
-	}
+	};
 	window['ADS']['camelize']=camelize;
 
 	if(!String.prototype.repeat){
@@ -149,7 +149,7 @@
 		String.prototype.trim=function(){
 			return this.replace(/^\s+|\s+$/g,'');
 		}
-	}
+	};
 	window['ADS']['node']={
 		ELEMENT_NODE:1,
 		ATTRIBUTE_NODE:2,
@@ -171,7 +171,7 @@
 		for(var i=0;i<nodes.length;i++){
 			func.call(nodes[i]);
 		}
-	}
+	};
 	window['ADS']['walkElementsLinear']=walkElementsLinear;
 
 	function walkTheDOMRecursive(func,node,depth,returnedFromParent){
@@ -182,7 +182,7 @@
 			walkTheDOMRecursive(func,node,depth,returnedFromParent);
 			node=node.nextSibling;
 		}
-	}
+	};
 	window['ADS']['walkTheDOMRecursive']=walkTheDOMRecursive;
 
 	function walkTheDOMWithAttributes(node,func,depth,returnedFromParent){
@@ -200,7 +200,7 @@
 				node=node.nextSibling;
 			}
 		}
-	}
+	};
 	window['ADS']['walkTheDOMWithAttributes']=walkTheDOMWithAttributes;
 	function addLoadEvent(loadEvent,waitForImages){
 		if(!isComparible()){return false;}
@@ -243,7 +243,7 @@
 		  }
 		/*@end @*/
 		return true;
-	}
+	};
 	window['ADS']['addLoadEvent']=addLoadEvent;
 	function stopPropagetion(eventObject){
 		eventObject=eventObject||getEventObject(eventObject);
@@ -252,7 +252,7 @@
 		}else{
 			eventObject.cancelBubble=true;
 		}
-	}
+	};
 	window['ADS']['stopPropagetion']=stopPropagetion;
 	function preventDefault(eventObject){
 		eventObject=eventObject||getEventObject(eventObject);
@@ -261,11 +261,11 @@
 		}else{
 			eventObject.returnValue=false;
 		}
-	}
+	};
 	window['ADS']['preventDefault']=preventDefault;
 	function getEventObject(W3CEvent){
 		return W3CEvent||window.event;
-	}
+	};
 	window['ADS']['getEventObject']=getEventObject;
 	function getTarget(eventObject){
 		eventObject=eventObject||getEventObject(eventObject);
@@ -277,7 +277,7 @@
 			target= node.parentNode;
 		}
 		return target;
-	}
+	};
 	window['ADS']['getTarget']=getTarget;
 	function getMouseButton(eventObject){
 		eventObject=eventObject||getEventObject(eventObject);
@@ -325,7 +325,7 @@
 			return false;
 		}
 	return buttons;	
-	}
+	};
 	window['ADS']['getMouseButton']=getMouseButton;
 	function getPointerPositionInDocument(eventObject){
 		eventObject=eventObject||getEventObject(eventObject);
@@ -333,6 +333,89 @@
 		var y=eventObject.pageY||(eventObject.clientY+(document.documentElement.scrollTop||document.body.scrollTop));
 		//现在x和y中包含着鼠标相对于文档原点的坐标
 		return {x:x,y:y}; 
-	}
+	};
 	window['ADS']['getPointerPositionInDocument']=getPointerPositionInDocument;
+	function getKeyPressed(eventObject){
+		eventObject=eventObject||getEventObject(eventObject);
+		var code= eventObject.keyCode;
+		var value=String.fromCharCode(code);
+		return {code:code,value:value};
+	};
+	window['ADS']['getKeyPressed']=getKeyPressed;
+	function setStyleById(element,styles){
+		//取得对象的引用
+		if(!(element=$(element)))return;
+		var property;
+		for(property in styles){
+			if(!styles.hasOwnProperty(property))continue;
+			if(element.style.setProperty){
+				//DOM2样式规范方法
+				element.style.setProperty(uncamelize(property,'-'),styles[property],null);
+			}else{
+				//备用方法
+				element.style[camelize(property)]=styles[property];
+			}
+		}
+		return true; 
+	};
+	window['ADS']['setStyle']=setStyle;
+	window['ADS']['setStyleById']=setStyleById;
+	/*通过类名修改多个元素的样式*/
+	function setStylesByClassName(paraen,tag,className,styles){
+		if(!(parent=$(parent)))return false;
+		var elements=parent.getElementsByClassName(className,tag,parent);
+		for(var e=0;e<elements.length;e++){
+			setStyleById(elements[0],styles);
+		} 
+	};
+	window['ADS']['setStylesByClassName']=setStylesByClassName;
+	/*通过标签名修改多个元素的样式*/
+	function setStylesByTagName(tagname,styles,parent){
+		parent=$(parent)||document;
+		var elements=parent.getElementsByTagName(tagname);
+		for(var e=0;e<elements.length;e++){
+			setStyleById(elements[0],styles);
+		} 
+	};
+	window['ADS']['setStylesByTagName']=setStylesByTagName;
+	function getClassNames(element){
+		if(!(element=$(element)))return false;
+		//用一个空格替换多个空格
+		//然后基于空格分割类名
+		return element.className.replace(/\s+/,' ').split(' '); 
+	};
+	window['ADS']['getClassNames']=getClassNames;
+	//检查元素中是否存在某个类
+	function hasClassName(element,className){
+		if(!(element=$(element)))return false;
+		var classes=getClassNames(element);
+		for(var i=0;e<classes.length;i++){
+			//检测className是否匹配，如果是则返回true
+			if(classes[i]===className){return true;}
+		}
+		return false; 
+	};
+	window['ADS']['hasClassName']=hasClassName;
+	//为元素添加类
+	function addClassName(element,className){
+		if(!(element=$(element)))return false;
+		//将类名添加到当前className的末尾
+		//如果没有className，则不包含空格
+		element.className+=(element.className?' ':'')+className;
+		return true;
+	};
+	window['ADS']['addClassName']=addClassName; 
+	//从元素中删除类
+	function removeClassName(element,className){
+		if(!(element=$(element)))return false;
+		var classes=getClassNames(element);
+		var length=classes.length;
+		//循环遍历数组删除匹配的项因为从数组中删除项会使数组变短，所以要反向循环
+		for(var i=length-1;i>=0;i--){
+			if(classes[i]===className){delete(classes[i])} 
+		}
+		element.className=classes.join(' ');
+		return length!==classes.length;
+	};
+	window['ADS']['removeClassName']=removeClassName; 
 })()
