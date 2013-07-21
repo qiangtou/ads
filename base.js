@@ -358,8 +358,30 @@
 		}
 		return true; 
 	};
-	window['ADS']['setStyle']=setStyle;
-	window['ADS']['setStyleById']=setStyleById;
+	window['ADS']['setStyle']=setStyleById;
+	window['ADS']['setStyle']=setStyleById;
+	/*取得一个元素的计算样式*/
+	function getStyle(element,property){
+		if(!(element=$(element))||!property)return false;
+		//检测元素style属性中的值
+		var value=element.style[camelize(property)];
+		if(!value){
+			//取得计算的样式值
+			if(document.defaultView && document.defaultView.getComputedStyle){
+				//DOM
+				var css=document.defaultView.getComputedStyle(element,null);
+				value=css?css.getPropertyValue(property):null;
+			}else if(element.currentStyle){
+				//ie
+				value=element.currentStyle[camelize(property)];
+			}
+		}
+		//返回空字符串而不是auto
+		//这样就不必检查auto了
+		return value=='auto'?'':value;
+	}
+	window['ADS']['getStyle']=getStyle;
+	window['ADS']['getStyleById']=getStyle;
 	/*通过类名修改多个元素的样式*/
 	function setStylesByClassName(paraen,tag,className,styles){
 		if(!(parent=$(parent)))return false;
@@ -418,4 +440,102 @@
 		return length!==classes.length;
 	};
 	window['ADS']['removeClassName']=removeClassName; 
+	/*添加新样式表*/
+	function addStyleSheet(url,media){
+		media=media||'screen';
+		var link=document.createElement('link');
+		link.setAttribute('rel','stylesheet');
+		link.setAttribute('type','text/css');
+		link.setAttribute('href',url);
+		link.setAttribute('media',media);
+		document.getElementsByTagName('head')[0].appendChild(link);
+	}
+	window['ADS']['addStyleSheet']=addStyleSheet; 
+	/*移除样式表*/
+	function removeStyleSheet(url,media){
+		var styles=getStyleSheets(url,media);
+		for(var i=0;i<styles.length;i++){
+			var node=styles[i].ownerNode||styles[i].owningElement;
+			//禁用样式表
+			styles[i].disabled=true;
+			//移除节点
+			node.parentNode.removeChild(node);
+		}
+	}
+	window['ADS']['removeStyleSheet']=removeStyleSheet; 
+	function getStyleSheets(url,media){
+		var sheets=[];
+		for(var i=0;i,document.styleSheets.length;i++){
+			if(url && document.stylesheets[i].href.indexOf(url)==-1){continue;}
+			if(media){
+				//规范化media字符串
+				media=media.replace(/,\s*/,',');
+				var sheetMedia;
+				if(document.stylesheet[i].media.mediaText){
+					//DOM方法
+					sheetMedia=document.styleSheets[i].media.mediaText.replace(/,\s*/,',');
+					//safari会添加额外的逗号和空格
+					sheetMedia=sheetMedia.replace(/,\s*/,'');
+				}else{
+					//msie方法
+					sheetMedia=document.styleSheets[i].media.replace(/,\s*/,',');
+				}
+				//如果media不匹配则跳过
+				if(media!=sheetMedia){continue;}
+			}
+			sheets.push(document.styleSheets[i]);
+		}
+		return sheets;
+	}
+	window['ADS']['getStyleSheets']=getStyleSheets; 
+	function editCSSRule(selector,styles,url,media){
+		var styleSheets=(typeof url=='array'?url:getStyleSheets(url,media));
+		for(var i=0;i<styleSheets.length;i++){
+			//取得规则列表
+			//DOM2样式规范方法是styleSheets[i].ceeEules
+			//meie方法是styleSheets[i].rules
+			var rules=styleSheets[i].cssRules||styleSheets[i].rules;
+			if(!rules){continue;}
+			//由于msie默认使用大写故转换为大写形式
+			//如果你使用的是区分大小写的id，则可能会导致冲突
+			selector=selector.toUpperCase();
+			for(var j=0;j<rules.length;j++){
+				//检查是否匹配
+				if(rules[j].selectorText.toUpperCase()==selector){
+					for(var property in styles){
+						if(!styles.hasOwnProperty(property)){continue;}
+						//设置新的样式属性
+						rules[j].style[camelize(property)]=styles[property];
+					}
+				}
+			}
+		}
+	}
+	window['ADS']['editCSSRule']=editCSSRule; 
+	/*添加一条CSS规则*/
+	function addCSSRule(selector,styles,index,url,media){
+		var declaretion='';
+		//根据styles参数（样式对象）构建声明字符串
+		for(var property in styles){
+			if(!styles.hasOwnProperty(property)){continue;}
+			declaretion+=property+':'+styles[property]+';';
+		}
+		var styleSheets=(typeof url=='array'?url:getStyleSheets(url,media));
+		var newIndex;
+		for(var i=0;i<styleSheets.length;i++){
+			//添加规则
+			if(styleSheets[i].insertRule){
+				//DOM2样式规范的方法
+				//index=length是列表末尾
+				newIndex=(index>=0?index :styleSheets[i].cssRules.length);
+				styleSheets[i].insertRule(selector+' { '+declaretion+' } ',newIndex);
+			}else if(styleSheets[i].addRule){
+				//ie
+				//index=-1是列表的末尾
+				newIndex=(index>=0?index:-1);
+				styleSheets[i].addRule(selector,declaretion,newIndex);
+			}
+		}
+	}
+	window['ADS']['addCSSRule']=addCSSRule; 
 })()
